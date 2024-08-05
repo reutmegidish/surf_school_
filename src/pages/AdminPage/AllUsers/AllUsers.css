@@ -1,0 +1,11 @@
+@media (max-width: 600px) {
+  .MuiTableCell-root {
+    padding: 8px;
+    font-size: 0.875rem;
+  }
+
+  .MuiButton-root {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
