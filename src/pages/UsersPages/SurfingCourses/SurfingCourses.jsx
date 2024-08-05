@@ -6,7 +6,7 @@ import {
   Box,
   Grid,
 } from '@mui/material'
-import BeginnerSurfLessons from '../../../components/Navbar/BeginnerSurfLessons'
+import { BeginnerSurfLessons } from '../../../components'
 
 const theme = createTheme({
   typography: {

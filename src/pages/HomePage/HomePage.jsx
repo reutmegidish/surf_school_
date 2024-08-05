@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import SurfingCourses from '../UsersPages/SurfingCourses/SurfingCourses'
-import CommunityInfoComponent from '../../components/CommunityInfoComponent'
+import { CommunityCard } from '../../components'
 
 const HomePage = () => {
   return (
@@ -21,7 +21,7 @@ const HomePage = () => {
           width: '100%',
         }}
       />
-      <CommunityInfoComponent />
+      <CommunityCard />
       <SurfingCourses />
     </>
   )
