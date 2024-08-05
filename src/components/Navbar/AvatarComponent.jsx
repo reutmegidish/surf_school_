@@ -18,5 +18,6 @@ const AvatarComponent = ({ handleOpenUserMenu }) => {
     </IconButton>
   )
 }
+//
 
 export default AvatarComponent
