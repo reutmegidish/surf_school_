@@ -1,10 +1,10 @@
 import { getUserData, updateUserData } from '../../services/firestoreService'
 import { useAuth } from '../../context/AuthProvider'
 import { Box, Typography, Grid, Container } from '@mui/material'
-import LessonCard from '../../components/LessonCard'
 import { collection, addDoc } from 'firebase/firestore'
 import { firestore } from '../../firebase/firebaseConfig'
 import { useEffect, useState } from 'react'
+import { LessonCard } from '../../components'
 
 const backgroundImageUrl = './images/beach.png'
 

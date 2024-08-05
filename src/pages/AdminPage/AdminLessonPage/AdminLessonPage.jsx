@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
-import AdminCalendar from '../../../components/AdminComponents/AdminCalendar'
-import LessonList from '../../../components/AdminComponents/LessonList'
-import AddLessonForm from '../../../components/AdminComponents/AddLessonForm'
+
 import {
   fetchLessons,
   updateLesson,
   addLesson,
 } from '../../../services/lessonsUtils'
 import { startOfWeek, endOfWeek } from 'date-fns'
+import { AddLessonForm, AdminCalendar, LessonList } from '../../../components'
 
 const AdminLessonPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())

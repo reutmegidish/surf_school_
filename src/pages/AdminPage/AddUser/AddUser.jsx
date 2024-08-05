@@ -1,69 +1,76 @@
-import { TextField, Button, Container, Box, Typography } from '@mui/material'
+import { TextField, Box, Typography, Snackbar, Alert } from '@mui/material'
 import { addUserToDatabase } from '../../../services/firestoreService'
 import { useState } from 'react'
+import {
+  BackgroundBox,
+  BackgroundImage,
+  FormBox,
+  FormContainer,
+  SubmitButton,
+} from './AddUserStyles'
 
 const AddUser = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  })
+
   const [isAddingUser, setIsAddingUser] = useState(false)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success')
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prevData) => ({ ...prevData, [name]: value }))
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setIsAddingUser(true)
+
+    if (!formData.name || !formData.email || !formData.password) {
+      setSnackbarMessage('All fields are required!')
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
+      setIsAddingUser(false)
+      return
+    }
+
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setSnackbarMessage('Please enter a valid email address!')
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
+      setIsAddingUser(false)
+      return
+    }
+
     try {
-      await addUserToDatabase(name, email, password)
-      alert('User Added Successfully!')
-      setName('')
-      setEmail('')
-      setPassword('')
+      await addUserToDatabase(formData.name, formData.email, formData.password)
+      setSnackbarMessage('User Added Successfully!')
+      setSnackbarSeverity('success')
+      setOpenSnackbar(true)
+      setFormData({ name: '', email: '', password: '' })
     } catch (error) {
       console.error('Error adding user: ', error)
+      setSnackbarMessage('Error adding user: ' + error.message)
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
     } finally {
       setIsAddingUser(false)
     }
   }
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false)
+  }
+
   return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-      }}
-    >
-      <img
-        src="/images/our1.png"
-        alt="background"
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          zIndex: -1,
-        }}
-      />
-      <Container
-        component="main"
-        maxWidth="xs"
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          height: '100%',
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            padding: 4,
-            borderRadius: 2,
-            boxShadow: 1,
-            textAlign: 'center',
-          }}
-        >
+    <BackgroundBox>
+      <BackgroundImage src="/images/our1.png" alt="background" />
+      <FormContainer component="main" maxWidth="xs">
+        <FormBox>
           <Typography component="h1" variant="h5">
             Add User
           </Typography>
@@ -77,8 +84,8 @@ const AddUser = () => {
               name="name"
               autoComplete="name"
               autoFocus
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.name}
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -88,8 +95,8 @@ const AddUser = () => {
               label="Email"
               name="email"
               autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -100,22 +107,42 @@ const AddUser = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
             />
-            <Button
+            <SubmitButton
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
               disabled={isAddingUser}
+              sx={{ mt: 3, mb: 2 }}
             >
               {isAddingUser ? 'Adding...' : 'Sign Up'}
-            </Button>
+            </SubmitButton>
           </Box>
-        </Box>
-      </Container>
-    </Box>
+        </FormBox>
+      </FormContainer>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        sx={{ zIndex: 10000 }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{
+            width: '100%',
+            transition: 'transform 0.5s ease',
+            transform:
+              snackbarSeverity === 'success' ? 'scale(1.1)' : 'scale(1)',
+          }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </BackgroundBox>
   )
 }
 

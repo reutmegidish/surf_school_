@@ -1,7 +1,6 @@
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthProvider'
 import DynamicLayout from './layouts/DynamicLayout/DynamicLayout'
-import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 
 import {
@@ -15,8 +14,9 @@ import {
   UserSchedule,
   AttendanceManagement,
 } from './pages'
-import OurInstructors from './components/OurInstructors'
+
 import AdminLessonPage from './pages/AdminPage/AdminLessonPage/AdminLessonPage'
+import { OurInstructors, ProtectedRoute } from './components'
 
 const pageRoutes = [
   { path: 'surfing-course', element: <SurfingCourse /> },
