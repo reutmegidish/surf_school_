@@ -15,8 +15,8 @@ import {
   AttendanceManagement,
 } from './pages'
 
-import AdminLessonPage from './pages/AdminPage/AdminLessonPage/AdminLessonPage'
 import { OurInstructors, ProtectedRoute } from './components'
+import AdminLessonPage from './pages/AdminPages/AdminLessonPage/AdminLessonPage'
 
 const pageRoutes = [
   { path: 'surfing-course', element: <SurfingCourse /> },
@@ -46,6 +46,7 @@ const router = createBrowserRouter([
         path: 'login',
         element: <Login />,
       },
+      { path: 'add', element: <AddUser /> },
 
       {
         path: 'lesson-registration',

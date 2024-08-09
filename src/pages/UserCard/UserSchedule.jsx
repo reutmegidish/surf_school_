@@ -1,96 +1,127 @@
-import { getUserData, updateUserData } from '../../services/firestoreService'
-import { useAuth } from '../../context/AuthProvider'
-import { Box, Typography, Grid, Container } from '@mui/material'
-import { collection, addDoc } from 'firebase/firestore'
-import { firestore } from '../../firebase/firebaseConfig'
 import { useEffect, useState } from 'react'
-import { LessonCard } from '../../components'
-
-const backgroundImageUrl = './images/beach.png'
+import { Grid, Typography, Card, CardContent, Button } from '@mui/material'
+import { useAuth } from '../../context/AuthProvider'
+import {
+  fetchLessonsForWeek,
+  registerForLesson,
+  getUserData,
+} from '../../services/lessonsUtils'
 
 const UserSchedule = () => {
-  const [lessons, setLessons] = useState([])
-  const [remainingLessons, setRemainingLessons] = useState(0)
   const { user: authUser } = useAuth()
-  const [userName, setUserName] = useState('')
+  const [lessons, setLessons] = useState([])
+  const [userData, setUserData] = useState(null)
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       if (authUser) {
-        const userData = await getUserData(authUser.uid)
-        console.log('User Data:', userData)
-        setLessons(userData.lessons || [])
-        setRemainingLessons(userData.remainingLessons || 0)
-        setUserName(userData.name || authUser.displayName || authUser.email)
+        const fetchedLessons = await fetchLessonsForWeek(authUser.uid)
+        setLessons(fetchedLessons)
+
+        const user = await getUserData(authUser.uid)
+        if (user) {
+          setUserData(user)
+        }
       }
     }
 
-    fetchUserData()
+    fetchData()
   }, [authUser])
 
-  const handleTakeLesson = async (lessonId) => {
-    if (remainingLessons > 0) {
-      const updatedLessons = lessons.map((lesson) =>
-        lesson.id === lessonId ? { ...lesson, taken: true } : lesson
-      )
-      setLessons(updatedLessons)
-      setRemainingLessons((prev) => prev - 1)
-
-      await updateUserData(authUser.uid, {
-        lessons: updatedLessons,
-        remainingLessons: remainingLessons - 1,
-      })
-
-      const selectedLesson = lessons.find((lesson) => lesson.id === lessonId)
-      await addDoc(collection(firestore, 'attendance'), {
-        userId: authUser.uid,
-        userName: authUser.displayName || authUser.email,
-        ...selectedLesson,
-        attended: false,
-      })
-    } else {
-      alert('No remaining lessons available.')
+  const handleRegister = async (lessonId) => {
+    try {
+      await registerForLesson(authUser.uid, lessonId)
+      alert('Successfully registered for the lesson!')
+    } catch (error) {
+      console.error('Error registering for lesson: ', error)
+      alert('Failed to register for the lesson.')
     }
   }
 
   return (
-    <Box
-      sx={{
-        backgroundImage: `url(${backgroundImageUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      <Container maxWidth="lg">
-        <Typography
-          variant="h3"
-          gutterBottom
-          align="center"
-          sx={{ padding: '50px 0' }}
-        >
-          Lesson Schedule
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Hello {userData?.name}
         </Typography>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-          {`${userName}'s Lessons`}
-        </Typography>
-        {lessons.length === 0 ? (
-          <Typography variant="body1">No lessons available.</Typography>
+
+        {userData?.remainingLessons === 0 ? (
+          <Typography variant="subtitle1" align="center" gutterBottom>
+            You have no remaining lessons to use
+          </Typography>
         ) : (
-          <Grid container spacing={4}>
-            {lessons.map((lesson) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={lesson.id}>
-                <LessonCard lesson={lesson} onTakeLesson={handleTakeLesson} />
-              </Grid>
-            ))}
-          </Grid>
+          <Typography variant="subtitle1" align="center" gutterBottom>
+            You have {userData?.remainingLessons ?? 'unknown'} remaining lessons
+          </Typography>
         )}
-        <Typography variant="h6" sx={{ mt: 4, fontWeight: 'bold' }}>
-          Remaining Lessons: {remainingLessons}
-        </Typography>
-      </Container>
-    </Box>
+      </Grid>
+      {lessons.map((lesson) => (
+        <Grid item xs={12} sm={6} md={4} key={lesson.id}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography
+                variant="h5"
+                component="div"
+                align="center"
+                sx={{ fontWeight: 'bold', marginBottom: 1 }}
+              >
+                {lesson.description}
+              </Typography>
+              <Typography
+                variant="h6"
+                component="div"
+                align="center"
+                sx={{ marginBottom: 0.5 }}
+              >
+                Date:{' '}
+                {lesson.date
+                  ? lesson.date.toDate().toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    })
+                  : 'Date not available'}
+              </Typography>
+              <Typography
+                color="text.secondary"
+                align="center"
+                sx={{ marginBottom: 0.5 }}
+              >
+                Time: {lesson.time}
+              </Typography>
+              <Typography variant="body2" align="center">
+                Location: {lesson.location}
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleRegister(lesson.id)}
+                disabled={userData?.remainingLessons === 0}
+                sx={{
+                  marginTop: 2,
+                  backgroundColor:
+                    userData?.remainingLessons === 0 ? '#cccccc' : null,
+                  '&:hover': {
+                    backgroundColor:
+                      userData?.remainingLessons === 0 ? '#cccccc' : null,
+                  },
+                }}
+              >
+                {userData?.remainingLessons === 0
+                  ? 'No Lessons Available'
+                  : 'Register for Lesson'}
+              </Button>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
   )
 }
 

@@ -21,7 +21,7 @@ export const addUserToDatabase = async (name, email, password) => {
       {
         id: '1',
         day: 'Monday',
-        date: '2024-07-08',
+        date: '2024-08-11',
         time: '10:00 AM',
         location: 'Beach A',
         description: 'Surfing basics for beginners',
@@ -30,7 +30,7 @@ export const addUserToDatabase = async (name, email, password) => {
       {
         id: '2',
         day: 'Tuesday',
-        date: '2024-07-09',
+        date: '2024-08-12',
         time: '2:00 PM',
         location: 'Beach B',
         description: 'Advanced surfing techniques',
@@ -39,7 +39,7 @@ export const addUserToDatabase = async (name, email, password) => {
       {
         id: '3',
         day: 'Wednesday',
-        date: '2024-07-10',
+        date: '2024-08-13',
         time: '9:00 AM',
         location: 'Beach C',
         description: 'Surfing competition preparation',
@@ -48,7 +48,7 @@ export const addUserToDatabase = async (name, email, password) => {
       {
         id: '4',
         day: 'Thursday',
-        date: '2024-07-11',
+        date: '2024-08-14',
         time: '4:00 PM',
         location: 'Beach D',
         description: 'Safety and rescue techniques',
@@ -57,7 +57,7 @@ export const addUserToDatabase = async (name, email, password) => {
       {
         id: '5',
         day: 'Friday',
-        date: '2024-07-12',
+        date: '2024-08-15',
         time: '11:00 AM',
         location: 'Beach E',
         description: 'Freestyle surfing tricks',

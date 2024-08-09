@@ -28,7 +28,7 @@ export const FormBox = styled(Box)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.8)',
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
-  // boxShadow: theme.shadows[1],
+
   textAlign: 'center',
 }))
 

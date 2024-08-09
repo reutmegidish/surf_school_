@@ -7,7 +7,7 @@ const HomePage = () => {
     <>
       <Box
         component="img"
-        src="./images/5.png"
+        src="./images/home-page.png"
         alt="Surfing"
         sx={{
           width: '100%',
