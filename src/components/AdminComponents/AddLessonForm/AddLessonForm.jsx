@@ -5,7 +5,11 @@ const AddLessonForm = ({ onAddLesson }) => {
     date: '',
     time: '',
     capacity: '',
-    status: 'Open',
+    // status: 'Open',
+    isOpen: true,
+    location: '',
+    description: '',
+    registeredStudents: [],
   })
 
   const handleChange = (e) => {
@@ -20,8 +24,11 @@ const AddLessonForm = ({ onAddLesson }) => {
     setLessonData({
       date: '',
       time: '',
-      capacity: '',
-      status: 'Open',
+      capacity: 0,
+      description: 'Beginners surf lesson',
+      location: 'PPAIA BEACH',
+      registeredStudents: [],
+      isOpen: true,
     })
   }
 

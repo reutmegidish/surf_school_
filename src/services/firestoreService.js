@@ -16,60 +16,13 @@ export const addUserToDatabase = async (name, email, password) => {
       password
     )
     const uid = userCredential.user.uid
-
-    const initialLessons = [
-      {
-        id: '1',
-        day: 'Monday',
-        date: '2024-07-08',
-        time: '10:00 AM',
-        location: 'Beach A',
-        description: 'Surfing basics for beginners',
-        taken: false,
-      },
-      {
-        id: '2',
-        day: 'Tuesday',
-        date: '2024-07-09',
-        time: '09:00 AM',
-        location: 'Beach B',
-        description: 'Advanced surfing techniques',
-        taken: false,
-      },
-      {
-        id: '3',
-        day: 'Wednesday',
-        date: '2024-07-10',
-        time: '9:00 AM',
-        location: 'Beach C',
-        description: 'Surfing competition preparation',
-        taken: false,
-      },
-      {
-        id: '4',
-        day: 'Thursday',
-        date: '2024-07-11',
-        time: '10:00 AM',
-        location: 'Beach D',
-        description: 'Safety and rescue techniques',
-        taken: false,
-      },
-      {
-        id: '5',
-        day: 'Friday',
-        date: '2024-07-12',
-        time: '11:00 AM',
-        location: 'Beach E',
-        description: 'Freestyle surfing tricks',
-        taken: false,
-      },
-    ]
+    console.log('here', uid)
 
     await setDoc(doc(collection(firestore, 'users'), uid), {
       name: name,
       email: email,
-      remainingLessons: 10,
-      lessons: initialLessons,
+      remainingLessons: 0,
+      attendedLessons: [],
       isAdmin: false,
     })
 

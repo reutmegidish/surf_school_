@@ -21,7 +21,13 @@ const MobileMenu = ({ anchorElNav, handleCloseNavMenu }) => (
       display: { xs: 'block', md: 'none' },
     }}
   >
-    <NavMenuItems handleClosMenu={handleCloseNavMenu} items={pages} />
+    {[
+      <NavMenuItems
+        key="nav-items"
+        handleClosMenu={handleCloseNavMenu}
+        items={pages}
+      />,
+    ]}
   </Menu>
 )
 
