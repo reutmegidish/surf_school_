@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Grid, Typography, Paper } from '@mui/material'
+import { Grid, Typography, Box } from '@mui/material'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { fetchLessons } from '../../../services/lessonsUtils'
@@ -13,7 +13,7 @@ const AdminCalendar = ({ selectedDate, onDateChange }) => {
         const startOfWeekDate = new Date(selectedDate)
         startOfWeekDate.setDate(selectedDate.getDate() - selectedDate.getDay())
         const endOfWeekDate = new Date(startOfWeekDate)
-        endOfWeekDate.setDate(startOfWeekDate.getDate() + 4)
+        endOfWeekDate.setDate(startOfWeekDate.getDate() + 6)
 
         const fetchedLessons = await fetchLessons(
           startOfWeekDate,
@@ -32,22 +32,31 @@ const AdminCalendar = ({ selectedDate, onDateChange }) => {
     <Grid
       container
       spacing={3}
-      component={Paper}
-      elevation={3}
-      sx={{ padding: 3 }}
+      justifyContent="center"
+      alignItems="center"
+      direction="column"
     >
       <Grid item xs={12}>
         <Typography variant="h6" sx={{ textAlign: 'center' }}>
-          Admin Calendar
+          Select a date to display lessons:
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => onDateChange(date)}
-          dateFormat="dd/MM/yyyy"
-          className="datepicker"
-        />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => onDateChange(date)}
+            dateFormat="dd/MM/yyyy"
+            className="datepicker"
+            style={{ width: '100%', maxWidth: 300 }}
+          />
+        </Box>
       </Grid>
     </Grid>
   )

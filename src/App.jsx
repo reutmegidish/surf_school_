@@ -5,22 +5,23 @@ import './App.css'
 
 import {
   AdminPanel,
-  HomePage,
-  Login,
   SurfingCourse,
   AllUsers,
   AddUser,
   LessonRegistration,
   UserSchedule,
   AttendanceManagement,
+  HomePage,
+  Login,
 } from './pages'
 
 import { OurInstructors, ProtectedRoute } from './components'
 import AdminLessonPage from './pages/AdminPages/AdminLessonPage/AdminLessonPage'
+import { ThemeProvider } from '@mui/material/styles'
+import theme from '../src/styles/theme'
 
 const pageRoutes = [
   { path: 'surfing-course', element: <SurfingCourse /> },
-
   { path: 'our-instructors', element: <OurInstructors /> },
 ]
 
@@ -46,7 +47,6 @@ const router = createBrowserRouter([
         path: 'login',
         element: <Login />,
       },
-      { path: 'add', element: <AddUser /> },
 
       {
         path: 'lesson-registration',
@@ -82,7 +82,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </AuthProvider>
   )
 }

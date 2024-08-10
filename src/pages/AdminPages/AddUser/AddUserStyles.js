@@ -1,20 +1,20 @@
 import { Button, Container, Box } from '@mui/material'
 import { styled } from '@mui/system'
 
-export const BackgroundBox = styled(Box)({
-  position: 'relative',
-  width: '100vw',
-  height: '100vh',
-  overflow: 'hidden',
-})
+// export const BackgroundBox = styled(Box)({
+//   position: 'relative',
+//   width: '100vw',
+//   height: '100vh',
+//   overflow: 'hidden',
+// })
 
-export const BackgroundImage = styled('img')({
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  zIndex: -1,
-})
+// export const BackgroundImage = styled('img')({
+//   position: 'absolute',
+//   width: '100%',
+//   height: '100%',
+//   objectFit: 'cover',
+//   zIndex: -1,
+// })
 
 export const FormContainer = styled(Container)(({ theme }) => ({
   display: 'flex',

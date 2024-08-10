@@ -7,23 +7,48 @@ import {
   addDoc,
   doc,
   getDoc,
+  arrayUnion,
 } from 'firebase/firestore'
 import { firestore } from '../firebase/firebaseConfig'
+const convertTimestampToDate = (timestamp) => {
+  if (timestamp instanceof Object && timestamp.toDate) {
+    return timestamp.toDate()
+  }
+  return new Date(timestamp)
+}
 
 export const fetchLessons = async (startOfWeek, endOfWeek) => {
-  console.log(startOfWeek, endOfWeek)
   try {
     const lessonsRef = collection(firestore, 'lessons')
     const q = query(
       lessonsRef,
-      where('date', '>=', startOfWeek.getTime()),
-      where('date', '<=', endOfWeek.getTime())
+      where('date', '>=', startOfWeek),
+      where('date', '<=', endOfWeek)
     )
     const snapshot = await getDocs(q)
-    const lessons = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    const lessons = snapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        date: data.date.toDate(),
+        description: data.description,
+        location: data.location,
+      }
+    })
     return lessons
   } catch (error) {
     console.error('Error fetching lessons: ', error)
+    throw error
+  }
+}
+
+export const updateUserAttendedLessons = async (userId, lessonId) => {
+  try {
+    const userRef = doc(firestore, 'users', userId)
+    await updateDoc(userRef, {
+      attendedLessons: arrayUnion(lessonId),
+    })
+  } catch (error) {
+    console.error('Error updating attended lessons: ', error)
     throw error
   }
 }
@@ -40,10 +65,9 @@ export const updateLesson = async (id, updatedData) => {
 
 export const addLesson = async (lessonData) => {
   try {
-    console.log(1234)
     const lessonsRef = collection(firestore, 'lessons')
     const docRef = await addDoc(lessonsRef, lessonData)
-    console.log('Lesson added with ID: ', docRef.id)
+
     return docRef.id
   } catch (error) {
     console.error('Error adding lesson: ', error)
@@ -91,34 +115,29 @@ export const fetchLessonsForWeek = async (userId) => {
   return lessonsData
 }
 
+export const updateUserLessons = async (userId, remainingLessons) => {
+  try {
+    const userDocRef = doc(firestore, 'users', userId)
+    await updateDoc(userDocRef, { remainingLessons })
+  } catch (error) {
+    console.error('Error updating user lessons: ', error)
+    throw new Error('Failed to update user lessons')
+  }
+}
+
 export const registerForLesson = async (userId, lessonId) => {
   try {
     const lessonRef = doc(firestore, 'lessons', lessonId)
     await updateDoc(lessonRef, {
-      registeredStudents: firestore.FieldValue.arrayUnion(userId),
+      registeredStudents: arrayUnion(userId),
     })
 
     const userRef = doc(firestore, 'users', userId)
     await updateDoc(userRef, {
-      attendedLessons: FieldValue.arrayUnion(lessonId),
+      attendedLessons: arrayUnion(lessonId),
     })
-
-    console.log(
-      `Student ${userId} registered successfully for lesson ${lessonId}`
-    )
   } catch (error) {
     console.error('Error registering student for lesson: ', error)
     throw error
-  }
-}
-
-const handleRegister = async (lessonId) => {
-  try {
-    await registerForLesson(authUser.uid, lessonId)
-    await registerStudentForLesson(authUser.uid, lessonId)
-    alert('Successfully registered for the lesson!')
-  } catch (error) {
-    console.error('Error registering for lesson: ', error)
-    alert('Failed to register for the lesson.')
   }
 }

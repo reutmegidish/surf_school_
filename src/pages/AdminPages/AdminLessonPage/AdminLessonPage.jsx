@@ -7,6 +7,7 @@ import {
 } from '../../../services/lessonsUtils'
 import { startOfWeek, endOfWeek } from 'date-fns'
 import { AddLessonForm, AdminCalendar, LessonList } from '../../../components'
+import { Timestamp } from 'firebase/firestore'
 
 const AdminLessonPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -58,7 +59,7 @@ const AdminLessonPage = () => {
   const handleLessonAdd = async (newLesson) => {
     const update = {
       ...newLesson,
-      date: new Date(newLesson.date).getTime(),
+      date: Timestamp.fromDate(new Date(newLesson.date)),
     }
 
     try {
@@ -86,25 +87,18 @@ const AdminLessonPage = () => {
           textAlign: 'center',
           marginBottom: 3,
         }}
-      >
-        <Typography variant="h5" component="h1">
-          Lessons for the week starting from {selectedDate.toDateString()}
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          textAlign: 'center',
-        }}
-      >
-        <Typography variant="h6" component="h5">
-          Select a date to display lessons
-        </Typography>
-        <AdminCalendar
-          selectedDate={selectedDate}
-          onDateChange={handleDateChange}
-        />
-      </Box>
+      ></Box>
+
+      <Typography variant="h5" component="h1">
+        Lessons for the week starting from {selectedDate.toDateString()}
+      </Typography>
+
+      <AdminCalendar
+        selectedDate={selectedDate}
+        onDateChange={handleDateChange}
+      />
       <LessonList lessons={lessons} onUpdateLesson={handleLessonUpdate} />
+
       <AddLessonForm onAddLesson={handleLessonAdd} />
     </Box>
   )
