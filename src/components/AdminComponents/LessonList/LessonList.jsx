@@ -1,24 +1,57 @@
-import { List, ListItem, ListItemText, Typography } from '@mui/material'
+import { List, ListItem, Box, Typography } from '@mui/material'
 
 const LessonList = ({ lessons, onUpdateLesson }) => {
   return (
-    <div>
+    <Box
+      sx={{
+        maxWidth: 600,
+        mx: 'auto',
+        p: 2,
+      }}
+    >
       <Typography variant="h6" gutterBottom>
-        Upcoming Lessons
+        Upcoming Lessons:
       </Typography>
-      <List>
-        {lessons.map((lesson) => (
-          <ListItem key={lesson.id}>
-            <ListItemText
-              primary={`${new Date(lesson.date).toLocaleDateString()} - ${
-                lesson.time
-              }`}
-              secondary={`Capacity: ${lesson.capacity}, Status: ${lesson.status}`}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </div>
+      {lessons.length === 0 ? (
+        <Typography
+          variant="body1"
+          sx={{ textAlign: 'center', color: 'text.secondary' }}
+        >
+          No lessons scheduled for this week.
+        </Typography>
+      ) : (
+        <List
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          {lessons.map((lesson) => (
+            <ListItem
+              key={lesson.id}
+              sx={{ mb: 2, p: 2, borderRadius: 1, boxShadow: 1 }}
+            >
+              <Box sx={{ width: '100%' }}>
+                <Typography variant="subtitle1">Date:</Typography>
+                <Typography variant="body1">
+                  {new Date(lesson.date).toLocaleDateString()} - {lesson.time}
+                </Typography>
+
+                <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                  Description:
+                </Typography>
+                <Typography variant="body1">{lesson.description}</Typography>
+
+                <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                  Location:
+                </Typography>
+                <Typography variant="body1">{lesson.location}</Typography>
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      )}
+    </Box>
   )
 }
 

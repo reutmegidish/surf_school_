@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
       const userData = await getUserData(user.uid)
       setIsAdmin(userData.isAdmin)
       setUser(user)
-      console.log(userData.isAdmin ? 'Logged in as admin' : 'Logged in as user')
     } catch (error) {
       console.error('Error signing in: ', error)
       throw error

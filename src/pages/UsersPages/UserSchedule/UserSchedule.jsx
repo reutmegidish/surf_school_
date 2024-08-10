@@ -1,26 +1,31 @@
 import { useEffect, useState } from 'react'
 import { Grid, Typography, Card, CardContent, Button } from '@mui/material'
-import { useAuth } from '../../context/AuthProvider'
+import { useAuth } from '../../../context/AuthProvider'
 import {
   fetchLessonsForWeek,
   registerForLesson,
   getUserData,
-} from '../../services/lessonsUtils'
+  updateUserLessons,
+} from '../../../services/lessonsUtils'
 
 const UserSchedule = () => {
   const { user: authUser } = useAuth()
   const [lessons, setLessons] = useState([])
   const [userData, setUserData] = useState(null)
+  const [registeredLessons, setRegisteredLessons] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       if (authUser) {
+        // Fetch lessons for the week
         const fetchedLessons = await fetchLessonsForWeek(authUser.uid)
         setLessons(fetchedLessons)
 
+        // Fetch user data including attended lessons
         const user = await getUserData(authUser.uid)
         if (user) {
           setUserData(user)
+          setRegisteredLessons(user.attendedLessons || [])
         }
       }
     }
@@ -30,8 +35,21 @@ const UserSchedule = () => {
 
   const handleRegister = async (lessonId) => {
     try {
+      // Register for the lesson
       await registerForLesson(authUser.uid, lessonId)
+
+      // Update the number of remaining lessons
+      const updatedRemainingLessons = userData.remainingLessons - 1
+      await updateUserLessons(authUser.uid, updatedRemainingLessons)
+
       alert('Successfully registered for the lesson!')
+
+      // Update the list of registered lessons and remaining lessons after successful registration
+      setRegisteredLessons((prev) => [...prev, lessonId])
+      setUserData((prev) => ({
+        ...prev,
+        remainingLessons: updatedRemainingLessons,
+      }))
     } catch (error) {
       console.error('Error registering for lesson: ', error)
       alert('Failed to register for the lesson.')
@@ -81,7 +99,7 @@ const UserSchedule = () => {
               >
                 Date:{' '}
                 {lesson.date
-                  ? lesson.date.toDate().toLocaleDateString('en-US', {
+                  ? new Date(lesson.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: '2-digit',
                       day: '2-digit',
@@ -102,19 +120,24 @@ const UserSchedule = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => handleRegister(lesson.id)}
-                disabled={userData?.remainingLessons === 0}
+                disabled={
+                  registeredLessons.includes(lesson.id) ||
+                  userData?.remainingLessons === 0
+                }
                 sx={{
                   marginTop: 2,
-                  backgroundColor:
-                    userData?.remainingLessons === 0 ? '#cccccc' : null,
+                  backgroundColor: registeredLessons.includes(lesson.id)
+                    ? '#cccccc'
+                    : null,
                   '&:hover': {
-                    backgroundColor:
-                      userData?.remainingLessons === 0 ? '#cccccc' : null,
+                    backgroundColor: registeredLessons.includes(lesson.id)
+                      ? '#cccccc'
+                      : null,
                   },
                 }}
               >
-                {userData?.remainingLessons === 0
-                  ? 'No Lessons Available'
+                {registeredLessons.includes(lesson.id)
+                  ? 'You are registered for this lesson'
                   : 'Register for Lesson'}
               </Button>
             </CardContent>

@@ -1,4 +1,6 @@
-import { addUserToDatabase } from '../services/authService'
+import { validateFormData } from '../utils/formHelpers'
+import { handleSnackbar } from '../utils/snackbarHelpers'
+import { addUserToDatabase } from '../../src/services/authService'
 
 export const useFormHandlers = (
   formData,
@@ -17,33 +19,38 @@ export const useFormHandlers = (
     event.preventDefault()
     setIsAddingUser(true)
 
-    if (!formData.name || !formData.email || !formData.password) {
-      setSnackbarMessage('All fields are required!')
-      setSnackbarSeverity('error')
-      setOpenSnackbar(true)
-      setIsAddingUser(false)
-      return
-    }
-
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setSnackbarMessage('Please enter a valid email address!')
-      setSnackbarSeverity('error')
-      setOpenSnackbar(true)
+    const { valid, message } = validateFormData(formData)
+    if (!valid) {
+      handleSnackbar(
+        setSnackbarMessage,
+        setSnackbarSeverity,
+        setOpenSnackbar,
+        message,
+        'error'
+      )
       setIsAddingUser(false)
       return
     }
 
     try {
       await addUserToDatabase(formData.name, formData.email, formData.password)
-      setSnackbarMessage('User Added Successfully!')
-      setSnackbarSeverity('success')
-      setOpenSnackbar(true)
+      handleSnackbar(
+        setSnackbarMessage,
+        setSnackbarSeverity,
+        setOpenSnackbar,
+        'User Added Successfully!',
+        'success'
+      )
       setFormData({ name: '', email: '', password: '' })
     } catch (error) {
       console.error('Error adding user: ', error)
-      setSnackbarMessage('Error adding user: ' + error.message)
-      setSnackbarSeverity('error')
-      setOpenSnackbar(true)
+      handleSnackbar(
+        setSnackbarMessage,
+        setSnackbarSeverity,
+        setOpenSnackbar,
+        'Error adding user: ' + error.message,
+        'error'
+      )
     } finally {
       setIsAddingUser(false)
     }

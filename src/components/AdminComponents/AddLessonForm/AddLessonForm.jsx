@@ -3,12 +3,9 @@ import { useState } from 'react'
 const AddLessonForm = ({ onAddLesson }) => {
   const [lessonData, setLessonData] = useState({
     date: '',
-    time: '',
-    capacity: '',
-    // status: 'Open',
-    isOpen: true,
-    location: '',
-    description: '',
+    time: '09:00',
+    location: 'Palma Beach',
+    description: 'Beginners surf lesson',
     registeredStudents: [],
   })
 
@@ -23,12 +20,10 @@ const AddLessonForm = ({ onAddLesson }) => {
     onAddLesson(lessonData)
     setLessonData({
       date: '',
-      time: '',
-      capacity: 0,
       description: 'Beginners surf lesson',
-      location: 'PPAIA BEACH',
+      location: 'Palma Beach',
+      time: '09:00',
       registeredStudents: [],
-      isOpen: true,
     })
   }
 
@@ -38,18 +33,6 @@ const AddLessonForm = ({ onAddLesson }) => {
         type="date"
         name="date"
         value={lessonData.date}
-        onChange={handleChange}
-      />
-      <input
-        type="time"
-        name="time"
-        value={lessonData.time}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="capacity"
-        value={lessonData.capacity}
         onChange={handleChange}
       />
       <button type="submit">Add Lesson</button>

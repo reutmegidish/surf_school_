@@ -49,29 +49,19 @@ const UserMenu = () => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {
-          user && [
-            <NavMenuItems
-              key="nav-items"
-              items={isAdmin ? adminItem : userItem}
-              handleCloseUserMenu={handleCloseUserMenu}
-            />,
-            <MenuItem key="schedule" onClick={handleNavigateSchedule}>
-              Schedule
-            </MenuItem>,
-            <MenuItem key="logout" onClick={handleLogout}>
-              Logout
-            </MenuItem>,
-          ]
-          // <>
-          //   <NavMenuItems
-          //     items={isAdmin ? adminItem : userItem}
-          //     handleCloseUserMenu={handleCloseUserMenu}
-          //   />
-          //   <MenuItem onClick={handleNavigateSchedule}>Schedule</MenuItem>
-          //   <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          // </>
-        }
+        {user && [
+          <NavMenuItems
+            key="nav-items"
+            items={isAdmin ? adminItem : userItem}
+            handleCloseUserMenu={handleCloseUserMenu}
+          />,
+          <MenuItem key="schedule" onClick={handleNavigateSchedule}>
+            Schedule
+          </MenuItem>,
+          <MenuItem key="logout" onClick={handleLogout}>
+            Logout
+          </MenuItem>,
+        ]}
       </Menu>
     </Box>
   )
