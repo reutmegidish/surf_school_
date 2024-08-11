@@ -25,9 +25,9 @@ npm install
 Run the Application
 npm run dev
 
-Check out the live demo .
+Check out the live demo [https://surf-school.netlify.app/.]
 
-# Login Credentials
+## Login Credentials
 
 Admin:
 Email: admin2@gmail.com
